@@ -1,0 +1,13 @@
+lightning
+torch 
+torchvision
+pre-commit
+flask
+rdkit
+
+flask
+flask-cors
+scikit-learn
+pandas
+numpy
+python-dotenv
