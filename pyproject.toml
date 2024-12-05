@@ -1,0 +1,28 @@
+[project]
+name = "galactic-gaze"
+description = "Train toy generative models on toy datasets"
+authors = [{name = "Karina Zadorozhny"}]
+dynamic = ["version", "readme", "dependencies"]
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["backend/src"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+readme = {file = "README.md"}
+
+
+[tool.setuptools.package-data]
+"gaze.configs" = ["**/*.yaml"]
+
+[build-system]
+requires = ["setuptools >= 65", "setuptools_scm[toml]>=6.2"]
+build-backend = 'setuptools.build_meta'
+
+
+[tool.setuptools_scm]
+local_scheme = "node-and-date"
+search_parent_directories = true
+version_scheme = "no-guess-dev"
+fallback_version = "0.0.1"
