@@ -4,13 +4,17 @@ A simple application for training toy generative models on 2D data distribution 
 ![alt text](assets/image.png)
 
 
-## Installation
+## Installation and Usage
 
 ```bash
-npm install
+python -m venv venv
+source venv/bin/activate
+pip install -e ./backend
+uvicorn gaze.main:app --reload
 ```
 
-Install the python package in development mode.
 ```bash
-pip install -e .
+cd frontend
+npm install
+npm start
 ```
