@@ -1,11 +1,12 @@
-import torch
-import lightning as L
-from torch.optim import Adam
-from torch import Tensor
 from typing import List
 
-from .components.vae import Encoder, Decoder
+import lightning as L
+import torch
+from torch import Tensor
+from torch.optim import Adam
+
 from .components.losses import vae_loss
+from .components.vae import Decoder, Encoder
 
 
 class VAE(L.LightningModule):

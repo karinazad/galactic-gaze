@@ -1,11 +1,10 @@
+import lightning as L
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import lightning as L
 from torch import Tensor
 
-
-from .components.gan import Generator, Discriminator
+from .components.gan import Discriminator, Generator
 
 
 class GANModel(L.LightningModule):

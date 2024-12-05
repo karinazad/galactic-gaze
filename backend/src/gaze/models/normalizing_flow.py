@@ -1,9 +1,10 @@
-import torch
+from typing import Tuple
+
 import lightning as L
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch import Tensor
-from typing import Tuple
 
 from .components.normalizing_flow import AffineCouplingLayer
 

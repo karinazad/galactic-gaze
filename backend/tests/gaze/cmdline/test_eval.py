@@ -2,11 +2,10 @@ import os
 from pathlib import Path
 
 import pytest
-from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig, open_dict
-
 from gaze.jobs.eval import evaluate
 from gaze.jobs.train import train
+from hydra.core.hydra_config import HydraConfig
+from omegaconf import DictConfig, open_dict
 
 
 @pytest.mark.slow

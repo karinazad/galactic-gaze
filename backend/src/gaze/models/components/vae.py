@@ -1,6 +1,7 @@
+from typing import List, Sequence, Tuple
+
 import torch.nn as nn
 from torch import Tensor
-from typing import Sequence, Tuple, List
 
 
 class Encoder(nn.Module):

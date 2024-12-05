@@ -2,19 +2,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import hydra
 import lightning as L
+from gaze.utils import (RankedLogger, extras, get_metric_value,
+                        instantiate_callbacks, instantiate_loggers,
+                        log_hyperparameters, task_wrapper)
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
-
-from gaze.utils import (
-    RankedLogger,
-    extras,
-    get_metric_value,
-    instantiate_callbacks,
-    instantiate_loggers,
-    log_hyperparameters,
-    task_wrapper,
-)
 
 log = RankedLogger(__name__, rank_zero_only=True)
 

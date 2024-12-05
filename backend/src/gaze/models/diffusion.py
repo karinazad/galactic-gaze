@@ -1,7 +1,7 @@
+import lightning as L
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import lightning as L
 from torch import Tensor
 
 from .components.diffusion import NoisePredictor

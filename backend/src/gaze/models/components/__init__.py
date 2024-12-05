@@ -1,6 +1,6 @@
-from .vae import Encoder, Decoder
 from .losses import vae_loss
 from .normalizing_flow import AffineCouplingLayer
+from .vae import Decoder, Encoder
 
 __all__ = [
     "Decoder",
