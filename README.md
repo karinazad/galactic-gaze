@@ -9,7 +9,7 @@
 ```bash
 python -m venv venv
 source venv/bin/activate
-pip install -e ./backend
+pip install -e .
 uvicorn gaze.main:app --reload
 ```
 

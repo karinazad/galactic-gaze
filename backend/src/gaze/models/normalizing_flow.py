@@ -6,10 +6,10 @@ import torch.nn as nn
 import torch.optim as optim
 from torch import Tensor
 
-from .components.normalizing_flow import AffineCouplingLayer
+from .components.affine_coupling_layer import AffineCouplingLayer
 
 
-class NormalizingFlowModule(L.LightningModule):
+class NormalizingFlow(L.LightningModule):
     def __init__(
         self, input_dim: int = 2, num_flows: int = 4, learning_rate: float = 1e-3
     ):
@@ -35,12 +35,13 @@ class NormalizingFlowModule(L.LightningModule):
 
         # Normalizing Flow
         self.flows: nn.ModuleList = nn.ModuleList(
-            [AffineCouplingLayer(input_dim) for _ in range(num_flows)]
+            [AffineCouplingLayer(dim_in=input_dim) for _ in range(num_flows)]
         )
 
     def forward(self, x: Tensor) -> Tuple[Tensor, Tensor]:
         """
         Forward pass through the normalizing flow.
+        Returns the latent representation and the log determinant of the Jacobian.
 
         Parameters
         ----------
@@ -50,15 +51,15 @@ class NormalizingFlowModule(L.LightningModule):
         Returns
         -------
         Tuple[Tensor, Tensor]
-            Transformed tensor and log determinant
+            Transformed tensor and log determinant of the Jacobian
         """
-        log_det_total: Tensor = torch.zeros(x.size(0), device=x.device)
+
+        z, log_det_total = x, torch.zeros(x.shape[0], device=self.device)
 
         for flow in self.flows:
-            x, log_det = flow(x)
-            log_det_total += log_det
+            z, log_det_total = flow(z, log_det_total, reverse=False)
 
-        return x, log_det_total
+        return z, log_det_total
 
     def training_step(self, batch: Tensor, batch_idx: int) -> Tensor:
         """
@@ -87,6 +88,34 @@ class NormalizingFlowModule(L.LightningModule):
 
         self.log("train_loss", loss, prog_bar=True)
         return loss
+
+    def validation_step(self, batch: Tensor, batch_idx: int) -> Tensor:
+        """
+        Perform a single validation step.
+
+        Parameters
+        ----------
+        batch : Tensor
+            Batch of validation data
+        batch_idx : int
+            Index of the current batch
+
+        Returns
+        -------
+        Tensor
+            Computed negative log-likelihood
+        """
+        x: Tensor = batch
+
+        z: Tensor
+        log_det: Tensor
+        z, log_det = self.forward(x)
+
+        log_prob: Tensor = self.base_dist.log_prob(z).sum(dim=-1)
+        nll: Tensor = -torch.mean(log_prob + log_det)
+
+        self.log("val_nll", nll, prog_bar=True)
+        return nll
 
     def _inverse(self, y: Tensor) -> Tensor:
         """
@@ -120,9 +149,15 @@ class NormalizingFlowModule(L.LightningModule):
         Tensor
             Generated samples
         """
-        z: Tensor = self.base_dist.sample((num_samples,))
-        x: Tensor = self._inverse(z)
-        return x
+
+        z = self.base_dist.sample((num_samples,))
+        log_det = torch.zeros(num_samples, device=self.device)
+
+        for flow in reversed(self.flows):
+            with torch.no_grad():
+                z, log_det = flow(z, log_det, reverse=True)
+
+        return z
 
     def configure_optimizers(self) -> optim.Adam:
         """

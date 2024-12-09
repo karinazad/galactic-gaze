@@ -2,9 +2,15 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import hydra
 import lightning as L
-from gaze.utils import (RankedLogger, extras, get_metric_value,
-                        instantiate_callbacks, instantiate_loggers,
-                        log_hyperparameters, task_wrapper)
+from gaze.utils import (
+    RankedLogger,
+    extras,
+    get_metric_value,
+    instantiate_callbacks,
+    instantiate_loggers,
+    log_hyperparameters,
+    task_wrapper,
+)
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
@@ -14,10 +20,12 @@ log = RankedLogger(__name__, rank_zero_only=True)
 
 @task_wrapper
 def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-    """Trains the model. Can additionally evaluate on a testset, using best weights obtained during
+    """Trains the model. Can additionally evaluate on a testset,
+    using best weights obtained during
     training.
 
-    This method is wrapped in optional @task_wrapper decorator, that controls the behavior during
+    This method is wrapped in optional @task_wrapper decorator, that
+    controls the behavior during
     failure. Useful for multiruns, saving info about the crash, etc.
 
     :param cfg: A DictConfig configuration composed by Hydra.
